@@ -115,3 +115,18 @@ The system demonstrates three key scenarios:
 - **External API**: https://67e14fb758cc6bf785254550.mockapi.io/pharmacies
 - **OpenAI**: GPT-3.5-turbo for conversations and information extraction
 - **Mock Services**: Email sending, callback scheduling, CRM integration
+
+# Follow up questions: 
+### How would you deploy this LLM response generation component over AWS? 
+With this arcitecture monolith will work the best. Simple lightweight AWS Lightsail container will work just fine and provide an opportunity to update prompts — possible even using simple bash script to download and unzip from the cloud of choice. 
+
+### How would you monitor and evaluate its performance when it’s in production?
+Logs. Logging. A lot of logs. Maybe integrate with [Datadog](https://www.datadoghq.com/) to provide complex analytics. Possibly wrap all of the LLM calls to monads, something like:
+```python
+def execute_with_profiling(*args):
+   function, *arguments = args
+   start = datetime.now()
+   result = function(*arguments)
+   end = datetime.now()
+   send_to_analytics_platform("Call of {function.__name__=} with {arguments=}; {start=} {end=}; execution time = {start - end}")
+```
