@@ -1,0 +1,11 @@
+Hello {pharmacy_name}! 👋
+
+Great to hear from you again. I see you're calling from {location}.
+
+📋 **{pharmacy_name}**
+📍 Located in {location}
+💊 Total Rx Volume: {total_rx_volume} prescriptions
+{top_drugs_text}
+{high_volume_message}
+
+How can {company_name} help you today?

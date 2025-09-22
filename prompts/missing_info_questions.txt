@@ -1,0 +1,4 @@
+name: What's the name of your pharmacy?
+contact_person: And what's your name so I can address you properly?
+location: Where is your pharmacy located? (City and State)
+rx_volume: Approximately how many prescriptions do you fill per month?

@@ -1,0 +1,5 @@
+Hello! 👋 Thank you for contacting {company_name}.
+
+I don't recognize this number in our system - are you a new pharmacy looking to learn about our services?
+
+{company_name} specializes in supporting high-volume pharmacies with comprehensive solutions. I'd love to learn more about your pharmacy!
