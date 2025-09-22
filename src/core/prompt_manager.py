@@ -24,13 +24,9 @@ class PromptManager:
             raise FileNotFoundError(f"Prompts directory not found: {self.prompts_dir}")
 
     def __getitem__(self, prompt_path: str) -> str:
-        file_path = self.prompts_dir / prompt_path
-
         if not prompt_path.endswith(".txt"):
-            file_path = f"{file_path}.txt"
-
-        if not file_path.exists():
-            raise FileNotFoundError(f"Prompt file not found: {file_path}")
+            prompt_path = f"{prompt_path}.txt"
+        file_path = self.prompts_dir / prompt_path
 
         cache_key = str(file_path.relative_to(self.prompts_dir))
 
@@ -48,9 +44,7 @@ class PromptManager:
             return content
 
         except Exception as e:
-            raise RuntimeError(
-                f"Failed to read prompt file {file_path}: {str(e)}"
-            ) from e
+            raise RuntimeError(f"Failed to read prompt file {file_path}: {str(e)}") from e
 
     def get_returning_customer_greeting(self, pharmacy: Pharmacy) -> str:
         top_drugs_text = ""
@@ -147,32 +141,49 @@ class PromptManager:
 
         if volume >= 100:
             return self["responses/lead_assessment_high_volume"].format(
+                estimated_rx_volume=volume,
                 company_name=self.company_name
             )
         if volume >= 50:
             return self["responses/lead_assessment_medium_volume"].format(
+                estimated_rx_volume=volume,
                 company_name=self.company_name
             )
 
         return self["responses/lead_assessment_low_volume"].format(
+            estimated_rx_volume=volume,
             company_name=self.company_name
         )
 
-    def get_missing_info_prompt_for_lead(self, lead: NewPharmacyLead) -> list[str]:
+    def get_missing_info_prompt_for_lead(self, lead: NewPharmacyLead) -> str | None:
         questions_to_ask = []
         if not lead.name:
-            questions_to_ask.append(self.get_missing_info_question("name"))
+            question = self.get_missing_info_question("name")
+            if question:
+                questions_to_ask.append(question)
 
         if not lead.contact_person:
-            questions_to_ask.append(self.get_missing_info_question("contact_person"))
+            question = self.get_missing_info_question("contact_person")
+            if question:
+                questions_to_ask.append(question)
 
         if not lead.city or not lead.state:
-            questions_to_ask.append(self.get_missing_info_question("location"))
+            question = self.get_missing_info_question("location")
+            if question:
+                questions_to_ask.append(question)
 
         if not lead.estimated_rx_volume:
-            questions_to_ask.append(self.get_missing_info_question("rx_volume"))
+            question = self.get_missing_info_question("rx_volume")
+            if question:
+                questions_to_ask.append(question)
 
-        return questions_to_ask
+        if not questions_to_ask:
+            return None
+            
+        if len(questions_to_ask) == 1:
+            return questions_to_ask[0]
+        else:
+            return " Also, " + " And ".join(questions_to_ask)
 
     def reload_prompts(self) -> None:
         self._cache.clear()
