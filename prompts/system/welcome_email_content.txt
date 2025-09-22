@@ -1,0 +1,13 @@
+Hello {pharmacy_name} team,
+
+Thank you for reaching out to {company_name} today! 
+
+We see you're based in {location} and handling {total_rx_volume} prescriptions. 
+{volume_message}
+
+Our team is ready to discuss how we can better support your pharmacy's needs.
+
+Best regards,
+The {company_name} Team
+
+P.S. We have your current prescription data on file, but let us know if anything has changed!

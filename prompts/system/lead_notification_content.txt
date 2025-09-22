@@ -1,0 +1,12 @@
+New pharmacy lead from SMS conversation:
+
+Pharmacy: {pharmacy_name}
+Contact: {contact_person}
+Phone: {phone}
+Location: {location}
+Est. Monthly Rx Volume: {estimated_rx_volume}
+Preferred Contact: {preferred_contact}
+
+Follow up needed: {follow_up_needed}
+
+This lead was generated automatically from our SMS chatbot.
