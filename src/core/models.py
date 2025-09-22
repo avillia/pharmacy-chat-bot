@@ -17,7 +17,9 @@ class Pharmacy(BaseModel):
     email: str | None = Field(None, description="Email address (may be None)")
     city: str = Field(..., description="City where pharmacy is located")
     state: str = Field(..., description="State where pharmacy is located")
-    prescriptions: list[Prescription] = Field(default_factory=list, description="List of prescriptions")
+    prescriptions: list[Prescription] = Field(
+        default_factory=list, description="List of prescriptions"
+    )
 
     @property
     def total_rx_volume(self) -> int:
@@ -43,8 +45,12 @@ class NewPharmacyLead(BaseModel):
     contact_person: str | None = Field(None, description="Name of contact person")
     city: str | None = Field(None, description="City location")
     state: str | None = Field(None, description="State location")
-    estimated_rx_volume: int | None = Field(None, ge=0, description="Estimated monthly Rx volume")
-    preferred_contact: str | None = Field(None, description="Preferred contact method (email/phone)")
+    estimated_rx_volume: int | None = Field(
+        None, ge=0, description="Estimated monthly Rx volume"
+    )
+    preferred_contact: str | None = Field(
+        None, description="Preferred contact method (email/phone)"
+    )
 
     @property
     def is_complete(self) -> bool:
@@ -64,9 +70,15 @@ class ConversationContext(BaseModel):
 
     caller_phone: str = Field(..., description="Phone number of the caller")
     pharmacy: Pharmacy | None = Field(None, description="Known pharmacy if recognized")
-    new_lead: NewPharmacyLead | None = Field(None, description="New lead information if unknown caller")
-    conversation_stage: str = Field(default="greeting", description="Current stage of conversation")
-    messages: list[str] = Field(default_factory=list, description="Conversation history")
+    new_lead: NewPharmacyLead | None = Field(
+        None, description="New lead information if unknown caller"
+    )
+    conversation_stage: str = Field(
+        default="greeting", description="Current stage of conversation"
+    )
+    messages: list[str] = Field(
+        default_factory=list, description="Conversation history"
+    )
 
     @property
     def is_returning_customer(self) -> bool:

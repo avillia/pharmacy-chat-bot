@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 from pathlib import Path
-from src.core.models import Pharmacy, NewPharmacyLead
+
+from src.core.models import NewPharmacyLead, Pharmacy
 
 
 class PromptManager:
@@ -44,7 +46,9 @@ class PromptManager:
             return content
 
         except Exception as e:
-            raise RuntimeError(f"Failed to read prompt file {file_path}: {str(e)}") from e
+            raise RuntimeError(
+                f"Failed to read prompt file {file_path}: {str(e)}"
+            ) from e
 
     def get_returning_customer_greeting(self, pharmacy: Pharmacy) -> str:
         top_drugs_text = ""
@@ -141,18 +145,15 @@ class PromptManager:
 
         if volume >= 100:
             return self["responses/lead_assessment_high_volume"].format(
-                estimated_rx_volume=volume,
-                company_name=self.company_name
+                estimated_rx_volume=volume, company_name=self.company_name
             )
         if volume >= 50:
             return self["responses/lead_assessment_medium_volume"].format(
-                estimated_rx_volume=volume,
-                company_name=self.company_name
+                estimated_rx_volume=volume, company_name=self.company_name
             )
 
         return self["responses/lead_assessment_low_volume"].format(
-            estimated_rx_volume=volume,
-            company_name=self.company_name
+            estimated_rx_volume=volume, company_name=self.company_name
         )
 
     def get_missing_info_prompt_for_lead(self, lead: NewPharmacyLead) -> str | None:
@@ -179,7 +180,7 @@ class PromptManager:
 
         if not questions_to_ask:
             return None
-            
+
         if len(questions_to_ask) == 1:
             return questions_to_ask[0]
         else:
