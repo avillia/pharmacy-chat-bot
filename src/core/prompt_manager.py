@@ -23,14 +23,20 @@ class PromptManager:
         if not self.prompts_dir.exists():
             raise FileNotFoundError(f"Prompts directory not found: {self.prompts_dir}")
 
-    def __getitem__(self, file_name: str) -> str:
-        if not file_name.endswith(".txt"):
-            file_name = f"{file_name}.txt"
+    def __getitem__(self, prompt_path: str) -> str:
+        file_path = self.prompts_dir / prompt_path
 
-        if file_name in self._cache:
-            return self._cache[file_name]
+        if not prompt_path.endswith(".txt"):
+            file_path = f"{file_path}.txt"
 
-        file_path = self.prompts_dir / file_name
+        if not file_path.exists():
+            raise FileNotFoundError(f"Prompt file not found: {file_path}")
+
+        cache_key = str(file_path.relative_to(self.prompts_dir))
+
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+
         if not file_path.exists():
             raise FileNotFoundError(f"Prompt file not found: {file_path}")
 
@@ -38,7 +44,7 @@ class PromptManager:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read().strip()
 
-            self._cache[file_name] = content
+            self._cache[cache_key] = content
             return content
 
         except Exception as e:
@@ -63,7 +69,7 @@ class PromptManager:
                 f"⭐ High-volume pharmacy - perfect fit for {self.company_name}!"
             )
 
-        return self["returning_customer_greeting"].format(
+        return self["responses/returning_customer_greeting"].format(
             pharmacy_name=pharmacy.name,
             location=pharmacy.location,
             total_rx_volume=pharmacy.total_rx_volume,
@@ -73,7 +79,9 @@ class PromptManager:
         )
 
     def get_new_lead_greeting(self) -> str:
-        return self["new_lead_greeting"].format(company_name=self.company_name)
+        return self["responses/new_lead_greeting"].format(
+            company_name=self.company_name
+        )
 
     def get_returning_customer_system_prompt(
         self,
@@ -85,7 +93,7 @@ class PromptManager:
             else "This pharmacy has growth potential."
         )
 
-        return self["returning_customer_system"].format(
+        return self["system/returning_customer_system"].format(
             company_name=self.company_name,
             pharmacy_name=pharmacy.name,
             location=pharmacy.location,
@@ -98,7 +106,7 @@ class PromptManager:
         lead: NewPharmacyLead,
         lead_assessment: str,
     ) -> str:
-        return self["new_lead_system"].format(
+        return self["system/new_lead_system"].format(
             company_name=self.company_name,
             pharmacy_name=lead.name or "Unknown",
             contact_person=lead.contact_person or "Unknown",
@@ -109,7 +117,7 @@ class PromptManager:
 
     def get_missing_info_question(self, missing_field: str) -> str | None:
         try:
-            questions_content = self["missing_info_questions"]
+            questions_content = self["responses/missing_info_questions"]
 
             questions = self._parse_questions_file(questions_content)
 
@@ -131,47 +139,40 @@ class PromptManager:
         lead: NewPharmacyLead,
     ) -> str:
         if not lead.estimated_rx_volume:
-            return self["lead_assessment_unknown"].format(
+            return self["responses/lead_assessment_unknown"].format(
                 company_name=self.company_name
             )
 
         volume = lead.estimated_rx_volume
 
         if volume >= 100:
-            template_name = "lead_assessment_high_volume"
-        elif volume >= 50:
-            template_name = "lead_assessment_medium_volume"
-        else:
-            template_name = "lead_assessment_low_volume"
+            return self["responses/lead_assessment_high_volume"].format(
+                company_name=self.company_name
+            )
+        if volume >= 50:
+            return self["responses/lead_assessment_medium_volume"].format(
+                company_name=self.company_name
+            )
 
-        return self[template_name].format(
-            estimated_rx_volume=volume, company_name=self.company_name
+        return self["responses/lead_assessment_low_volume"].format(
+            company_name=self.company_name
         )
 
-    def get_missing_info_prompt_for_lead(self, lead: NewPharmacyLead) -> str | None:
-        """
-        Get the next question to ask for missing lead information.
-
-        Args:
-            lead: Current lead information
-
-        Returns:
-            Next question to ask, or None if lead is complete
-        """
-        # Check what information is missing and return the first question needed
+    def get_missing_info_prompt_for_lead(self, lead: NewPharmacyLead) -> list[str]:
+        questions_to_ask = []
         if not lead.name:
-            return self.get_missing_info_question("name")
+            questions_to_ask.append(self.get_missing_info_question("name"))
 
         if not lead.contact_person:
-            return self.get_missing_info_question("contact_person")
+            questions_to_ask.append(self.get_missing_info_question("contact_person"))
 
         if not lead.city or not lead.state:
-            return self.get_missing_info_question("location")
+            questions_to_ask.append(self.get_missing_info_question("location"))
 
         if not lead.estimated_rx_volume:
-            return self.get_missing_info_question("rx_volume")
+            questions_to_ask.append(self.get_missing_info_question("rx_volume"))
 
-        return None
+        return questions_to_ask
 
     def reload_prompts(self) -> None:
         self._cache.clear()
