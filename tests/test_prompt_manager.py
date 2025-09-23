@@ -12,7 +12,6 @@ class TestPromptManager:
     @pytest.fixture
     def sample_pharmacy(self):
         return Pharmacy(
-            id=999,
             name="Test Pharmacy",
             phone="+1-555-TEST-123",
             email="test@example.com",
@@ -225,7 +224,6 @@ def test_prompt_manager_integration():
 
     # Test with sample pharmacy
     pharmacy = Pharmacy(
-        id=1,
         name="Integration Test Pharmacy",
         phone="+1-555-INTEGRATION",
         email="test@integration.com",

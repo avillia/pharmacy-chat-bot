@@ -168,19 +168,3 @@ class PharmacyChatbot:
 
         except Exception as e:
             raise ChatbotError(f"Failed to generate AI response: {str(e)}") from e
-
-    def suggest_follow_up_actions(self, context: ConversationContext) -> list[str]:
-        actions = []
-
-        if context.is_returning_customer and context.pharmacy:
-            pharmacy = context.pharmacy
-            if pharmacy.email:
-                actions.append(f"Send follow-up email to {pharmacy.email}")
-            actions.append(f"Schedule callback to {pharmacy.phone}")
-
-        elif context.new_lead and context.new_lead.is_complete:
-            actions.append("Send lead information to sales team")
-            actions.append("Create CRM entry for new lead")
-            actions.append(f"Schedule callback to {context.new_lead.phone}")
-
-        return actions

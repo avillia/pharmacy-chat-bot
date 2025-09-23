@@ -17,7 +17,6 @@ class TestFollowUpActions:
     @pytest.fixture
     def sample_pharmacy(self):
         return Pharmacy(
-            id=1,
             name="Test Pharmacy",
             phone="+1-555-TEST-PHARM",
             email="test@testpharmacy.com",
@@ -32,7 +31,6 @@ class TestFollowUpActions:
     @pytest.fixture
     def high_volume_pharmacy(self):
         return Pharmacy(
-            id=2,
             name="High Volume Pharmacy",
             phone="+1-555-HIGH-VOL",
             email="contact@highvolume.com",
@@ -46,7 +44,6 @@ class TestFollowUpActions:
     @pytest.fixture
     def pharmacy_no_email(self):
         return Pharmacy(
-            id=3,
             name="No Email Pharmacy",
             phone="+1-555-NO-EMAIL",
             email=None,
@@ -227,7 +224,6 @@ class TestFollowUpActions:
 
     def test_pharmacy_volume_assessment_in_email(self):
         regular_pharmacy = Pharmacy(
-            id=1,
             name="Regular Pharmacy",
             phone="+1-555-REG",
             email="reg@test.com",
@@ -237,7 +233,6 @@ class TestFollowUpActions:
         )
 
         high_volume_pharmacy = Pharmacy(
-            id=2,
             name="High Volume Pharmacy",
             phone="+1-555-HIGH",
             email="high@test.com",
@@ -260,7 +255,6 @@ class TestFollowUpActions:
 
     def test_dynamic_company_branding(self):
         test_pharmacy = Pharmacy(
-            id=1,
             name="Brand Test Pharmacy",
             phone="+1-555-BRAND",
             email="brand@test.com",
@@ -296,7 +290,6 @@ def test_follow_up_actions_integration():
     print("=" * 50)
 
     test_pharmacy = Pharmacy(
-        id=999,
         name="Integration Test Pharmacy",
         phone="+1-555-INTEGRATION",
         email="integration@test.com",

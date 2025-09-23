@@ -1,1 +1,0 @@
-Follow-up call for {pharmacy_name} - {conversation_summary}

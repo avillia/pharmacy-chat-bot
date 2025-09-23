@@ -46,7 +46,6 @@ class PharmacyClient:
             ]
 
         return Pharmacy(
-            id=data["id"],
             name=data["name"],
             phone=data["phone"],
             email=data.get("email"),

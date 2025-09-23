@@ -11,7 +11,6 @@ class Prescription(BaseModel):
 class Pharmacy(BaseModel):
     """Represents a pharmacy with all its details."""
 
-    id: int = Field(..., description="Unique identifier for the pharmacy")
     name: str = Field(..., description="Name of the pharmacy")
     phone: str = Field(..., description="Phone number of the pharmacy")
     email: str | None = Field(None, description="Email address (may be None)")
@@ -72,9 +71,6 @@ class ConversationContext(BaseModel):
     pharmacy: Pharmacy | None = Field(None, description="Known pharmacy if recognized")
     new_lead: NewPharmacyLead | None = Field(
         None, description="New lead information if unknown caller"
-    )
-    conversation_stage: str = Field(
-        default="greeting", description="Current stage of conversation"
     )
     messages: list[str] = Field(
         default_factory=list, description="Conversation history"
